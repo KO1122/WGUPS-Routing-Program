@@ -35,7 +35,7 @@ class HashTable:
             self.array[key_hash].append(key_value)
 
     # Function to get the value of a given key in the hash table 
-    def get(self, package_id: int) -> Union[Package, None]:
+    def lookup(self, package_id: int) -> Union[Package, None]:
         key_hash = self.hash(package_id)
         if self.array[key_hash] is not None:
             for entry in self.array[key_hash]:
@@ -44,15 +44,3 @@ class HashTable:
                 if entry[0] == package_id:
                     return entry[1]
         return None 
-    
-# ht = HashTable()
-# pk1 = Package(0, 'a', 'a', 'a', 1, 1, 'a')
-# ht.insert(0, pk1)
-# print(ht.get(0))
-# pk2 = Package(1, 'b', 'b', 'b', 2, 2, 'b')
-# ht.insert(0, pk2)
-# print(ht.get(0))
-# pk3 = Package(3, 'c', 'c', 'c', 2, 2, 'b')
-# ht.insert(40, pk3)
-# print(ht.array[0])
-# print(ht.get(40))

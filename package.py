@@ -29,7 +29,8 @@ class Package:
             f"{self.delivery_city} {self.delivery_state} " +
             f"{self.delivery_zip_code} {self.delivery_deadline} " + 
             f"{self.package_weight} {self.delivery_notes} " + 
-            f"{self.delivery_status}" 
+            f"{self.delivery_status} {self.depart_time} " + 
+            f"{self.delivery_time}" 
         )
     
     def update_status(self, time: datetime):

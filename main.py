@@ -40,8 +40,6 @@ def load_package_data(csv_file: str) -> None:
 
 hash_table = HashTable()
 load_package_data('package.csv')
-# for i in range(len(hash_table.array)):
-#     print(f"Key: {i+1}, Value: {hash_table.get(i+1)}")
 
 with open("./address.csv") as address_csv:
     address_data = csv.reader(address_csv)
@@ -57,13 +55,6 @@ def get_distance_between(address1: int, address2: int) -> float:
         distance = distance_list[address2][address1]
     return float(distance)
 
-def get_min_distance_from(address, truck_packages):
-    min_dist = float("inf")
-    for package in truck_packages:
-        dist = get_distance_between(address, package.delivery_address) 
-        min_dist = min(min_dist, dist)
-    return min_dist 
-
 packages1 = [1,13,14,15,16,19,20,29,30,31,34,37,40]
 truck1 = Truck('4001 South 700 East', 18, 0.0, packages1, datetime.timedelta(hours=8))
 packages2 = [3,6,12,17,18,21,22,23,24,26,27,33,35,36,38,39]
@@ -76,29 +67,34 @@ addressToIdx = {a[2]:int(a[0]) for a in address_list}
 def truck_deliver_packages(truck: Truck):
     to_deliver = []
     for package_id in truck.packages:
-        package = hash_table.get(package_id)
+        package = hash_table.lookup(package_id)
         to_deliver.append(package)
 
     truck.packages.clear()
     while to_deliver:
         min_dist = float("inf")
         for package in to_deliver:
+            if package.package_id == 9 and truck.total_time < datetime.timedelta(hours=10, minutes=20):
+                continue 
             dist = get_distance_between(addressToIdx[truck.current_location], addressToIdx[package.delivery_address])
             if dist < min_dist:
                 min_dist = dist
                 next_package = package 
 
+        if next_package.package_id == 9:
+            next_package.delivery_address = '410 S State St'
+
         to_deliver.remove(next_package)
 
         truck.packages.append(next_package.package_id)
         truck.miles += min_dist
-        truck.time += datetime.timedelta(hours=min_dist/18)
+        truck.total_time += datetime.timedelta(hours=min_dist/18)
         truck.current_location = next_package.delivery_address
         
         next_package.depart_time = truck.depart_time
-        next_package.delivery_time = truck.time
+        next_package.delivery_time = truck.total_time
 
 truck_deliver_packages(truck1)
 truck_deliver_packages(truck2)
-truck3.depart_time = truck3.time = min(truck1.time, truck2.time)
+truck3.depart_time = truck3.total_time = min(truck1.total_time, truck2.total_time)
 truck_deliver_packages(truck3)
