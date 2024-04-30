@@ -1,5 +1,8 @@
+from typing import List
+from package import Package
+import datetime
 class Truck:
-    def __init__(self, current_location, speed, miles, packages, depart_time):
+    def __init__(self, current_location: str, speed: int, miles: float, packages: List[Package], depart_time: datetime):
         self.current_location = current_location 
         self.speed = speed
         self.miles = miles 
