@@ -98,3 +98,48 @@ truck_deliver_packages(truck1)
 truck_deliver_packages(truck2)
 truck3.depart_time = truck3.total_time = min(truck1.total_time, truck2.total_time)
 truck_deliver_packages(truck3)
+
+def main():
+    while True:
+        print()
+        print("Welcome to Western Governors University Parcel Service!")
+        print("""
+Options: 
+    1. Print All Package Final Status and Total Mileage
+    2. Get a Single Package Status with a Time
+    3. Get All Package Status with a Time 
+    4. Exit the Program
+"""
+        )
+
+        num = int(input("Input a number: "))
+        if num == 1:
+            for i in range(1, 41):
+                package = hash_table.lookup(i)
+                package.delivery_status = 'delivered'
+                print(package)
+            mileage = truck1.miles + truck2.miles + truck3.miles
+            print(f"The total mileage is {mileage}")
+        elif num == 2:
+            user_package_id = int(input("Please enter a valid package ID: "))
+            user_time = input("Please enter a valid time in the form (HH:MM:SS): ")
+            h, m, s = user_time.split(":")
+            time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+            package = hash_table.lookup(user_package_id)
+            print(time)
+            package.update_status(time)
+            print(package)
+        elif num == 3:
+            user_time = input("Please enter a valid time in the form (HH:MM:SS): ")
+            h, m, s = user_time.split(":")
+            time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+            for i in range(1, 41):
+                package = hash_table.lookup(i)
+                package.update_status(time)
+                print(package)
+        elif num == 4:
+            exit()
+        else:
+            print("Enter a valid number!!!")
+            
+main()
