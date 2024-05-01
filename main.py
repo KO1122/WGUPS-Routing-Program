@@ -10,6 +10,7 @@ from hash_table import HashTable
 from package import Package
 from truck import Truck
 
+# Function to load package data 
 def load_package_data(csv_file: str) -> None:
     with open(csv_file) as packages:
         package_data = csv.reader(packages, delimiter=',')
@@ -38,6 +39,7 @@ def load_package_data(csv_file: str) -> None:
             
             hash_table.insert(package_id, package)
 
+# Instantiate hash table object and load it with packages 
 hash_table = HashTable()
 load_package_data('package.csv')
 
@@ -49,12 +51,14 @@ with open("./distance.csv") as distance_csv:
     distance_data = csv.reader(distance_csv)
     distance_list = list(distance_data)   
 
+# Function to get the distance between 2 addresses 
 def get_distance_between(address1: int, address2: int) -> float:
     distance = distance_list[address1][address2]
     if distance == '':
         distance = distance_list[address2][address1]
     return float(distance)
 
+# Instantiate truck objects 
 packages1 = [1,13,14,15,16,19,20,29,30,31,34,37,40]
 truck1 = Truck('4001 South 700 East', 18, 0.0, packages1, datetime.timedelta(hours=8))
 packages2 = [3,6,12,17,18,21,22,23,24,26,27,33,35,36,38,39]
@@ -62,18 +66,23 @@ truck2 = Truck('4001 South 700 East', 18, 0.0, packages2, datetime.timedelta(hou
 packages3 = [2,4,5,7,8,9,10,11,25,28,32]
 truck3 = Truck('4001 South 700 East', 18, 0.0, packages3, None)
 
-# idxToAddress = {int(a[0]):a[2] for a in address_list}
+# Dictionary that maps addresses to their corresponding index number 
 addressToIdx = {a[2]:int(a[0]) for a in address_list}
+
 def truck_deliver_packages(truck: Truck):
+    # Append package objects to to_deliver array 
     to_deliver = []
     for package_id in truck.packages:
         package = hash_table.lookup(package_id)
         to_deliver.append(package)
 
     truck.packages.clear()
+
+    # Get the address with the minimum distance from the current location 
     while to_deliver:
         min_dist = float("inf")
         for package in to_deliver:
+            # Package 9 can only be handled after 10:20
             if package.package_id == 9 and truck.total_time < datetime.timedelta(hours=10, minutes=20):
                 continue 
             dist = get_distance_between(addressToIdx[truck.current_location], addressToIdx[package.delivery_address])
@@ -81,16 +90,19 @@ def truck_deliver_packages(truck: Truck):
                 min_dist = dist
                 next_package = package 
 
+        # Change package 9 address to '410 S State St'
         if next_package.package_id == 9:
             next_package.delivery_address = '410 S State St'
 
         to_deliver.remove(next_package)
 
+        # Update truck attributes once package has been delivered 
         truck.packages.append(next_package.package_id)
         truck.miles += min_dist
         truck.total_time += datetime.timedelta(hours=min_dist/18)
         truck.current_location = next_package.delivery_address
         
+        # Update package attributes once package has been delivered 
         next_package.depart_time = truck.depart_time
         next_package.delivery_time = truck.total_time
 
@@ -100,6 +112,7 @@ truck3.depart_time = truck3.total_time = min(truck1.total_time, truck2.total_tim
 truck_deliver_packages(truck3)
 
 def main():
+    # User Interface 
     while True:
         print()
         print("Welcome to Western Governors University Parcel Service!")

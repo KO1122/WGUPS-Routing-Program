@@ -33,6 +33,7 @@ class Package:
             f"{self.delivery_time}" 
         )
     
+    # Change delivery status of package
     def update_status(self, time: datetime):
         if self.delivery_time < time:
             self.delivery_status = "delivered"
