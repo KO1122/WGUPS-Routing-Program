@@ -73,6 +73,7 @@ def truck_deliver_packages(truck: Truck):
     # Append package objects to to_deliver array 
     to_deliver = []
     for package_id in truck.packages:
+        # Find the package in the hash table 
         package = hash_table.lookup(package_id)
         to_deliver.append(package)
 
@@ -139,7 +140,6 @@ Options:
             h, m, s = user_time.split(":")
             time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
             package = hash_table.lookup(user_package_id)
-            print(time)
             package.update_status(time)
             print(package)
         elif num == 3:
