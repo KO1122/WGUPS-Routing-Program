@@ -60,11 +60,11 @@ def get_distance_between(address1: int, address2: int) -> float:
 
 # Instantiate truck objects 
 packages1 = [1,13,14,15,16,19,20,29,30,31,34,37,40]
-truck1 = Truck('4001 South 700 East', 18, 0.0, packages1, datetime.timedelta(hours=8))
+truck1 = Truck(1, '4001 South 700 East', 18, 0.0, packages1, datetime.timedelta(hours=8))
 packages2 = [3,6,12,17,18,21,22,23,24,26,27,33,35,36,38,39]
-truck2 = Truck('4001 South 700 East', 18, 0.0, packages2, datetime.timedelta(hours=9, minutes=5))
+truck2 = Truck(2, '4001 South 700 East', 18, 0.0, packages2, datetime.timedelta(hours=9, minutes=5))
 packages3 = [2,4,5,7,8,9,10,11,25,28,32]
-truck3 = Truck('4001 South 700 East', 18, 0.0, packages3, None)
+truck3 = Truck(3, '4001 South 700 East', 18, 0.0, packages3, None)
 
 # Dictionary that maps addresses to their corresponding index number 
 addressToIdx = {a[2]:int(a[0]) for a in address_list}
@@ -91,10 +91,6 @@ def truck_deliver_packages(truck: Truck):
                 min_dist = dist
                 next_package = package 
 
-        # Change package 9 address to '410 S State St'
-        if next_package.package_id == 9:
-            next_package.delivery_address = '410 S State St'
-
         to_deliver.remove(next_package)
 
         # Update truck attributes once package has been delivered 
@@ -104,6 +100,7 @@ def truck_deliver_packages(truck: Truck):
         truck.current_location = next_package.delivery_address
         
         # Update package attributes once package has been delivered 
+        next_package.truck = truck.id
         next_package.depart_time = truck.depart_time
         next_package.delivery_time = truck.total_time
 
@@ -111,6 +108,15 @@ truck_deliver_packages(truck1)
 truck_deliver_packages(truck2)
 truck3.depart_time = truck3.total_time = min(truck1.total_time, truck2.total_time)
 truck_deliver_packages(truck3)
+
+def update_package_9(package: Package, time: datetime):
+    if package.package_id == 9:
+        if time < datetime.timedelta(hours=10, minutes=20):
+            package.delivery_address = '300 State St'
+            package.delivery_zip_code = 84103
+        else:
+            package.delivery_address = '410 S State St'
+            package.delivery_zip_code = 84111
 
 def main():
     # User Interface 
@@ -131,6 +137,7 @@ Options:
             for i in range(1, 41):
                 package = hash_table.lookup(i)
                 package.delivery_status = 'delivered'
+                update_package_9(package, datetime.timedelta(hours=17))
                 print(package)
             mileage = truck1.miles + truck2.miles + truck3.miles
             print(f"The total mileage is {mileage}")
@@ -141,6 +148,7 @@ Options:
             time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
             package = hash_table.lookup(user_package_id)
             package.update_status(time)
+            update_package_9(package, time)
             print(package)
         elif num == 3:
             user_time = input("Please enter a valid time in the form (HH:MM:SS): ")
@@ -149,6 +157,7 @@ Options:
             for i in range(1, 41):
                 package = hash_table.lookup(i)
                 package.update_status(time)
+                update_package_9(package, time)
                 print(package)
         elif num == 4:
             exit()

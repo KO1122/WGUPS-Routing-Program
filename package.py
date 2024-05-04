@@ -20,6 +20,7 @@ class Package:
         self.package_weight = package_weight
         self.delivery_notes = delivery_notes
         self.delivery_status = delivery_status
+        self.truck = None 
         self.depart_time = None
         self.delivery_time = None
 
@@ -29,8 +30,8 @@ class Package:
             f"{self.delivery_city} {self.delivery_state} " +
             f"{self.delivery_zip_code} {self.delivery_deadline} " + 
             f"{self.package_weight} {self.delivery_notes} " + 
-            f"{self.delivery_status} {self.depart_time} " + 
-            f"{self.delivery_time}" 
+            f"{self.delivery_status} by truck {self.truck} " + 
+            f"{self.depart_time} {self.delivery_time}" 
         )
     
     # Change delivery status of package
