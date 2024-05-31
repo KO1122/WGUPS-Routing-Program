@@ -1,0 +1,1 @@
+This is a package delivery simulation application that implements the nearest-neighbor heuristic to deliver packages in as short of a time as possible with the least amount of mileage. Users will be able to load up virtual trucks, view the status of a package(s), and find out the total mileage of the trip.
